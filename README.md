@@ -26,7 +26,7 @@ variable.
 the resulting jdk image should be found in build/*
 
 ## Run Java with SC
-Volatile-By-Default can be enabled using -XX:+SC flag (or -XX:+SCInter and -XX:+SCComp for interpreter and compiler only). Also -XX:-TieredCompilation is needed to turn of c1 compiler (only the c2 compiler is Volatile-By-Default now). Use -XX:-OptimizeStringConcat to disable String intrinsics optimizations if you are worried about them.
+Volatile-By-Default can be enabled using -XX:+SC flag (or -XX:+SCInter and -XX:+SCComp for interpreter and compiler only). Also -XX:-TieredCompilation is needed to turn of c1 compiler (only the c2 compiler is Volatile-By-Default now). Also remember to use -XX:-OptimizeStringConcat to disable String intrinsics optimizations.
 ```
 BUILD_IMAGE/jdk/bin/java -XX:-TieredCompilation -XX:+SC -XX:-OptimizeStringConcat SomeJavaProgram
 ```
