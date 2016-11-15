@@ -15,14 +15,14 @@ add the /bin directory of this installation to your path environment
 variable.
 
 2. configure the build, install necessary dependencies:
-```
-bash ./configure
-```
+	```
+	bash ./configure
+	```
 
 3. build the openjdk:
-```
-make all
-```
+	```
+	make all
+	```
 the resulting jdk image should be found in build/*
 
 ## Run Java with SC
