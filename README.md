@@ -23,9 +23,10 @@ variable.
 	```
 	make all
 	```
-\* Openjdk8u have some compatability issue with gcc 6.0. See (http://git.net/ml/hotspot-dev/2016-05/msg00133.html). You can consider downgrade your gcc if you run into this issue.
 
 the resulting jdk image should be found in build/*
+
+\* OpenJDK8u has some compatability issue with gcc 6.0. See (http://git.net/ml/hotspot-dev/2016-05/msg00133.html). You can consider downgrade your gcc if you run into this issue.
 
 ## Run Java with VBD-HotSpot
 Volatile-By-Default can be enabled using -XX:+VBD flag (or -XX:+VBDInter and -XX:+VBDComp for interpreter and compiler only). Also -XX:-TieredCompilation is needed to turn off c1 compiler (only the c2 compiler is Volatile-By-Default now). Also remember to use -XX:-OptimizeStringConcat to disable String intrinsics optimizations, and -XX:+AggresiveMemBar to allow more optimizations for non-escaping objects.
