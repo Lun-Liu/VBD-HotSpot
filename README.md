@@ -1,4 +1,4 @@
-# SC-HotSpot
+# VBD-HotSpot
 
 This project modified HotSpot JVM in OpenJDK8u to provide Volatile-By-Default semantics for HotSpot JVM, including a Volatile-By-Default interpreter for x86-64 and a Volatile-By-Default c2 compiler. VBD-HotSpot compiler also supports "relaxed" semantics for programmer specified variables, methods, or classes
 
