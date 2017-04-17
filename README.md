@@ -1,6 +1,6 @@
 # SC-HotSpot
 
-This project modified HotSpot JVM in OpenJDK8u to provide Volatile-By-Default semantics for HotSpot JVM, including a Volatile-By-Default interpreter for x86-64 and a Volatile-By-Default c2 compiler.
+This project modified HotSpot JVM in OpenJDK8u to provide Volatile-By-Default semantics for HotSpot JVM, including a Volatile-By-Default interpreter for x86-64 and a Volatile-By-Default c2 compiler. VBD-HotSpot compiler also supports "relaxed" semantics for programmer specified variables, methods, or classes
 
 This repo is cloned from the openjdk8u-master Mercurial repository (last changeset: 1645:b77f17326a42, Jan 25 2016). The original README file of the Mercurial File is attached at the end.
 
@@ -25,12 +25,18 @@ variable.
 	```
 the resulting jdk image should be found in build/*
 
-## Run Java with SC
-Volatile-By-Default can be enabled using -XX:+SC flag (or -XX:+SCInter and -XX:+SCComp for interpreter and compiler only). Also -XX:-TieredCompilation is needed to turn of c1 compiler (only the c2 compiler is Volatile-By-Default now). Also remember to use -XX:-OptimizeStringConcat to disable String intrinsics optimizations.
-```
-BUILD_IMAGE/jdk/bin/java -XX:-TieredCompilation -XX:+SC -XX:-OptimizeStringConcat SomeJavaProgram
-```
+## Run Java with VBD-HotSpot
+Volatile-By-Default can be enabled using -XX:+VBD flag (or -XX:+VBDInter and -XX:+VBDComp for interpreter and compiler only). Also -XX:-TieredCompilation is needed to turn off c1 compiler (only the c2 compiler is Volatile-By-Default now). Also remember to use -XX:-OptimizeStringConcat to disable String intrinsics optimizations, and -XX:+AggresiveMemBar to allow more optimizations for non-escaping objects.
 
+```
+BUILD_IMAGE/jdk/bin/java -XX:-TieredCompilation -XX:+VBD -XX:-OptimizeStringConcat -XX:+AggresiveMemBar SomeJavaProgram
+```
+## "relaxed" semantics for methods, fields, classes, etc.
+VBD-HotSpot allows programmers to specify certain methods, fields, or classes to have "relaxed" semantics (current JMM semantics) instead of Volatile-by-Default semantics. To specify such methods, fields, or classes, use flags -XX:VBDRelaxedMethod, -XX:VBDRelaxedField, or -XX:VBDRelaxedClass.
+
+```
+BUILD_IMAGE/jdk/bin/java -XX:-TieredCompilation -XX:+VBD -XX:-OptimizeStringConcat -XX:+AggresiveMemBar -XX:+VBDRelaxedMethod=to/relax/method1,to/relax/method2 SomeJavaProgram
+```
 
 =============================================================================
 README:
