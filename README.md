@@ -35,7 +35,7 @@ BUILD_IMAGE/jdk/bin/java -XX:-TieredCompilation -XX:+VBD -XX:-OptimizeStringConc
 VBD-HotSpot allows programmers to specify certain methods, fields, or classes to have "relaxed" semantics (current JMM semantics) instead of Volatile-by-Default semantics. To specify such methods, fields, or classes, use flags -XX:VBDRelaxedMethod, -XX:VBDRelaxedField, or -XX:VBDRelaxedClass.
 
 ```
-BUILD_IMAGE/jdk/bin/java -XX:-TieredCompilation -XX:+VBD -XX:-OptimizeStringConcat -XX:+AggresiveMemBar -XX:+VBDRelaxedMethod=to/relax/method1,to/relax/method2 SomeJavaProgram
+BUILD_IMAGE/jdk/bin/java -XX:-TieredCompilation -XX:+VBD -XX:-OptimizeStringConcat -XX:+AggresiveMemBar -XX:VBDRelaxedMethod=to/relax/method1,to/relax/method2 SomeJavaProgram
 ```
 
 =============================================================================
