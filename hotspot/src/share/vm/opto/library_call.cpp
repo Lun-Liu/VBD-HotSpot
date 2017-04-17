@@ -1214,7 +1214,7 @@ bool LibraryCallKit::inline_string_compareTo() {
     return true;
   }
   set_result(make_string_method_node(Op_StrComp, receiver, arg));
-  if(SC||SCComp)
+  if(VBD||VBDComp)
     insert_mem_bar(Op_MemBarAcquire);
   return true;
 }
@@ -1310,7 +1310,7 @@ bool LibraryCallKit::inline_string_equals() {
   record_for_igvn(region);
 
   set_result(_gvn.transform(phi));
-  if(SC||SCComp)
+  if(VBD||VBDComp)
     insert_mem_bar(Op_MemBarAcquire);
   return true;
 }
@@ -1320,7 +1320,7 @@ bool LibraryCallKit::inline_array_equals() {
   Node* arg1 = argument(0);
   Node* arg2 = argument(1);
   set_result(_gvn.transform(new (C) AryEqNode(control(), memory(TypeAryPtr::CHARS), arg1, arg2)));
-  if(SC || SCComp)
+  if(VBD || VBDComp)
     insert_mem_bar(Op_MemBarAcquire);
   return true;
 }
@@ -1606,7 +1606,7 @@ bool LibraryCallKit::inline_string_indexOf() {
 
     result = string_indexOf(receiver, pat, o, cache, md2);
   }
-  if(SC||SCComp)
+  if(VBD||VBDComp)
     insert_mem_bar(Op_MemBarAcquire);
   set_result(result);
   return true;
@@ -2534,7 +2534,7 @@ const TypeOopPtr* LibraryCallKit::sharpen_unsafe_type(Compile::AliasType* alias_
 
 bool LibraryCallKit::inline_unsafe_access(bool is_native_ptr, bool is_store, BasicType type, bool is_volatile) {
   //[SC]: for library calls
-  if(SC || SCComp)
+  if(VBD || VBDComp)
     is_volatile = true;
   if (callee()->is_static())  return false;  // caller must have the capability!
 
@@ -3075,7 +3075,7 @@ bool LibraryCallKit::inline_unsafe_load_store(BasicType type, LoadStoreKind kind
   // Add the trailing membar surrounding the access
   insert_mem_bar(Op_MemBarCPUOrder);
   insert_mem_bar(Op_MemBarAcquire);
-  if(SC||SCComp)
+  if(VBD||VBDComp)
     insert_mem_bar(Op_MemBarVolatile);
 
   assert(type2size[load_store->bottom_type()->basic_type()] == type2size[rtype], "result type should match");
@@ -3142,7 +3142,7 @@ bool LibraryCallKit::inline_unsafe_ordered_store(BasicType type) {
   else {
     store = store_to_memory(control(), adr, val, type, adr_type, MemNode::release, require_atomic_access);
   }
-  if ((SC || SCComp)) {
+  if ((VBD || VBDComp)) {
     insert_mem_bar(Op_MemBarVolatile);
   }
   insert_mem_bar(Op_MemBarCPUOrder);
@@ -3966,7 +3966,7 @@ bool LibraryCallKit::inline_array_copyOf(bool is_copyOfRange) {
       generate_arraycopy(TypeAryPtr::OOPS, T_OBJECT,
                          original, start, newcopy, intcon(0), moved,
                          disjoint_bases, length_never_negative);
-      if(SC||SCComp){
+      if(VBD||VBDComp){
         insert_mem_bar(Op_MemBarAcquire);
       }
     }
@@ -4409,7 +4409,7 @@ bool LibraryCallKit::inline_unsafe_copyMemory() {
 
   // Conservatively insert a memory barrier on all memory slices.
   // Do not let writes of the copy source or destination float below the copy.
-  if(SC||SCComp)
+  if(VBD||VBDComp)
     insert_mem_bar(Op_MemBarRelease);
   insert_mem_bar(Op_MemBarCPUOrder);
 
@@ -4423,7 +4423,7 @@ bool LibraryCallKit::inline_unsafe_copyMemory() {
 
   // Do not let reads of the copy destination float above the copy.
   insert_mem_bar(Op_MemBarCPUOrder);
-  if(SC||SCComp){
+  if(VBD||VBDComp){
     insert_mem_bar(Op_MemBarAcquire);
     insert_mem_bar(Op_MemBarVolatile);
   }
@@ -4695,7 +4695,7 @@ bool LibraryCallKit::inline_native_clone(bool is_virtual) {
   } // original reexecute is set back here
 
   set_result(_gvn.transform(result_val));
-  if(SC || SCComp)
+  if(VBD || VBDComp)
     insert_mem_bar(Op_MemBarAcquire);
   return true;
 }
@@ -4816,7 +4816,7 @@ bool LibraryCallKit::inline_arraycopy() {
   if (!has_src || !has_dest) {
     // Conservatively insert a memory barrier on all memory slices.
     // Do not let writes into the source float below the arraycopy.
-    if(SC||SCComp){
+    if(VBD||VBDComp){
       insert_mem_bar(Op_MemBarRelease);
     }
     insert_mem_bar(Op_MemBarCPUOrder);
@@ -4832,7 +4832,7 @@ bool LibraryCallKit::inline_arraycopy() {
     if (!InsertMemBarAfterArraycopy)
       // (If InsertMemBarAfterArraycopy, there is already one in place.)
       insert_mem_bar(Op_MemBarCPUOrder);
-    if(SC||SCComp){
+    if(VBD||VBDComp){
       insert_mem_bar(Op_MemBarAcquire);
       insert_mem_bar(Op_MemBarVolatile);
     }
@@ -4849,13 +4849,13 @@ bool LibraryCallKit::inline_arraycopy() {
   if (src_elem != dest_elem || dest_elem == T_VOID) {
     // The component types are not the same or are not recognized.  Punt.
     // (But, avoid the native method wrapper to JVM_ArrayCopy.)
-    if(SC||SCComp){
+    if(VBD||VBDComp){
       insert_mem_bar(Op_MemBarRelease);
     }
     generate_slow_arraycopy(TypePtr::BOTTOM,
                             src, src_offset, dest, dest_offset, length,
                             /*dest_uninitialized*/false);
-    if(SC||SCComp){
+    if(VBD||VBDComp){
       insert_mem_bar(Op_MemBarAcquire);
       insert_mem_bar(Op_MemBarVolatile);
     }
@@ -4949,7 +4949,7 @@ bool LibraryCallKit::inline_arraycopy() {
                      src, src_offset, dest, dest_offset, length,
                      false, false, slow_region);
 
-  if(SC||SCComp){
+  if(VBD||VBDComp){
     insert_mem_bar(Op_MemBarAcquire);
     insert_mem_bar(Op_MemBarVolatile);
   }
@@ -5382,7 +5382,7 @@ LibraryCallKit::generate_arraycopy(const TypePtr* adr_type,
   } else if (InsertMemBarAfterArraycopy)
     insert_mem_bar(Op_MemBarCPUOrder);
 
-  //if(SC || SCComp)
+  //if(VBD || VBDComp)
   //  insert_mem_bar(Op_MemBarVolatile);
 }
 
@@ -5789,7 +5789,7 @@ bool LibraryCallKit::inline_encodeISOArray() {
   if (src_elem != T_CHAR || dst_elem != T_BYTE) {
     return false;
   }
-  if(SC||SCComp)
+  if(VBD||VBDComp)
     insert_mem_bar(Op_MemBarRelease);
   Node* src_start = array_element_address(src, src_offset, src_elem);
   Node* dst_start = array_element_address(dst, dst_offset, dst_elem);
@@ -5800,7 +5800,7 @@ bool LibraryCallKit::inline_encodeISOArray() {
   Node* enc = new (C) EncodeISOArrayNode(control(), memory(mtype), src_start, dst_start, length);
   enc = _gvn.transform(enc);
   Node* res_mem = _gvn.transform(new (C) SCMemProjNode(enc));
-  if(SC||SCComp){
+  if(VBD||VBDComp){
     insert_mem_bar(Op_MemBarAcquire);
     insert_mem_bar(Op_MemBarVolatile);
   }
@@ -5930,7 +5930,7 @@ bool LibraryCallKit::inline_updateCRC32() {
    */
 
   Node* M1 = intcon(-1);
-  //if(SC || SCComp){
+  //if(VBD || VBDComp){
   //  insert_mem_bar(Op_MemBarRelease);
  // }
   crc = _gvn.transform(new (C) XorINode(crc, M1));
@@ -5945,7 +5945,7 @@ bool LibraryCallKit::inline_updateCRC32() {
   crc = _gvn.transform(new (C) URShiftINode(crc, intcon(8)));
   result = _gvn.transform(new (C) XorINode(crc, result));
   result = _gvn.transform(new (C) XorINode(result, M1));
-  if(SC || SCComp){
+  if(VBD || VBDComp){
     insert_mem_bar(Op_MemBarAcquire);
     //insert_mem_bar(Op_MemBarVolatile);
   }
@@ -5979,7 +5979,7 @@ bool LibraryCallKit::inline_updateBytesCRC32() {
     return false;
   }
 
-  //if(SC || SCComp){
+  //if(VBD || VBDComp){
   //  insert_mem_bar(Op_MemBarRelease);
   //}
   // 'src_start' points to src array + scaled offset
@@ -5996,7 +5996,7 @@ bool LibraryCallKit::inline_updateBytesCRC32() {
                                  stubAddr, stubName, TypePtr::BOTTOM,
                                  crc, src_start, length);
   Node* result = _gvn.transform(new (C) ProjNode(call, TypeFunc::Parms));
-  if(SC || SCComp){
+  if(VBD || VBDComp){
     insert_mem_bar(Op_MemBarAcquire);
     //insert_mem_bar(Op_MemBarVolatile);
   }
@@ -6017,7 +6017,7 @@ bool LibraryCallKit::inline_updateByteBufferCRC32() {
   Node* offset  = argument(3); // type: int
   Node* length  = argument(4); // type: int
 
-  //if(SC || SCComp){
+  //if(VBD || VBDComp){
   //  insert_mem_bar(Op_MemBarRelease);
   //}
   src = ConvL2X(src);  // adjust Java long to machine word
@@ -6035,7 +6035,7 @@ bool LibraryCallKit::inline_updateByteBufferCRC32() {
                                  stubAddr, stubName, TypePtr::BOTTOM,
                                  crc, src_start, length);
   Node* result = _gvn.transform(new (C) ProjNode(call, TypeFunc::Parms));
-  if(SC || SCComp){
+  if(VBD || VBDComp){
     insert_mem_bar(Op_MemBarAcquire);
     //insert_mem_bar(Op_MemBarVolatile);
   }
@@ -6097,7 +6097,7 @@ Node * LibraryCallKit::load_field_from_object(Node * fromObj, const char * field
   int offset  = field->offset_in_bytes();
   //[SC] force SC, though not needed in x86
   bool is_vol = true;
-  if(!SC && !SCComp)
+  if(!VBD && !VBDComp)
     is_vol = field->is_volatile();
   ciType* field_klass = field->type();
   assert(field_klass->is_loaded(), "should be loaded");
@@ -6183,23 +6183,23 @@ bool LibraryCallKit::inline_aescrypt_Block(vmIntrinsics::ID id) {
     if (original_k_start == NULL) return false;
 
     // Call the stub.
-    if(SC || SCComp)
+    if(VBD || VBDComp)
       insert_mem_bar(Op_MemBarRelease);
     make_runtime_call(RC_LEAF|RC_NO_FP, OptoRuntime::aescrypt_block_Type(),
                       stubAddr, stubName, TypePtr::BOTTOM,
                       src_start, dest_start, k_start, original_k_start);
-    if(SC || SCComp){
+    if(VBD || VBDComp){
       insert_mem_bar(Op_MemBarAcquire);
       insert_mem_bar(Op_MemBarVolatile);
     }
   } else {
     // Call the stub.
-    if(SC || SCComp)
+    if(VBD || VBDComp)
       insert_mem_bar(Op_MemBarRelease);
     make_runtime_call(RC_LEAF|RC_NO_FP, OptoRuntime::aescrypt_block_Type(),
                       stubAddr, stubName, TypePtr::BOTTOM,
                       src_start, dest_start, k_start);
-    if(SC || SCComp){
+    if(VBD || VBDComp){
       insert_mem_bar(Op_MemBarAcquire);
       insert_mem_bar(Op_MemBarVolatile);
     }
@@ -6289,25 +6289,25 @@ bool LibraryCallKit::inline_cipherBlockChaining_AESCrypt(vmIntrinsics::ID id) {
     if (original_k_start == NULL) return false;
 
     // Call the stub, passing src_start, dest_start, k_start, r_start, src_len and original_k_start
-    if(SC || SCComp)
+    if(VBD || VBDComp)
       insert_mem_bar(Op_MemBarRelease);
     cbcCrypt = make_runtime_call(RC_LEAF|RC_NO_FP,
                                  OptoRuntime::cipherBlockChaining_aescrypt_Type(),
                                  stubAddr, stubName, TypePtr::BOTTOM,
                                  src_start, dest_start, k_start, r_start, len, original_k_start);
-    if(SC || SCComp){
+    if(VBD || VBDComp){
       insert_mem_bar(Op_MemBarAcquire);
       insert_mem_bar(Op_MemBarVolatile);
     }
   } else {
     // Call the stub, passing src_start, dest_start, k_start, r_start and src_len
-    if(SC || SCComp)
+    if(VBD || VBDComp)
       insert_mem_bar(Op_MemBarRelease);
     cbcCrypt = make_runtime_call(RC_LEAF|RC_NO_FP,
                                  OptoRuntime::cipherBlockChaining_aescrypt_Type(),
                                  stubAddr, stubName, TypePtr::BOTTOM,
                                  src_start, dest_start, k_start, r_start, len);
-    if(SC || SCComp){
+    if(VBD || VBDComp){
       insert_mem_bar(Op_MemBarAcquire);
       insert_mem_bar(Op_MemBarVolatile);
     }
@@ -6461,12 +6461,12 @@ bool LibraryCallKit::inline_sha_implCompress(vmIntrinsics::ID id) {
   if (state == NULL) return false;
 
   // Call the stub.
-  if(SC||SCComp)
+  if(VBD||VBDComp)
     insert_mem_bar(Op_MemBarRelease);
   Node* call = make_runtime_call(RC_LEAF|RC_NO_FP, OptoRuntime::sha_implCompress_Type(),
                                  stubAddr, stubName, TypePtr::BOTTOM,
                                  src_start, state);
-  if(SC||SCComp){
+  if(VBD||VBDComp){
     insert_mem_bar(Op_MemBarAcquire);
     insert_mem_bar(Op_MemBarVolatile);
   }
@@ -6565,7 +6565,7 @@ bool LibraryCallKit::inline_sha_implCompressMB(Node* digestBase_obj, ciInstanceK
     state = get_state_from_sha_object(sha_obj);
   }
   if (state == NULL) return false;
-  if(SC || SCComp)
+  if(VBD || VBDComp)
     insert_mem_bar(Op_MemBarRelease);
 
   // Call the stub.
@@ -6576,7 +6576,7 @@ bool LibraryCallKit::inline_sha_implCompressMB(Node* digestBase_obj, ciInstanceK
   // return ofs (int)
   Node* result = _gvn.transform(new (C) ProjNode(call, TypeFunc::Parms));
   set_result(result);
-  if(SC||SCComp){
+  if(VBD||VBDComp){
     insert_mem_bar(Op_MemBarAcquire);
     insert_mem_bar(Op_MemBarVolatile);
   }

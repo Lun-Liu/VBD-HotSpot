@@ -115,14 +115,14 @@
   develop(intx, OptoPeepholeAt, -1,                                         \
           "Apply peephole optimizations to this peephole rule")             \
                                                                             \
-  product(bool, SC, false,                                               \
-          "Force SC for code, treat every read and write as volatile, essentially equal to +SCInter, +SCComp")      \
+  product(bool, VBD, false,                                               \
+          "Volatile-by-Default for code, treat every read and write as volatile, essentially equal to +VBDInter, +VBDComp")      \
                                                                             \
-  product(bool, SCInter, false,                                               \
-          "Seperate flag for SC in inter mode.")      \
+  product(bool, VBDInter, false,                                               \
+          "Seperate flag for VBD in inter mode.")      \
                                                                             \
-  product(bool, SCComp, false,                                               \
-          "Seperate flag for SC in compiler mode.")      \
+  product(bool, VBDComp, false,                                               \
+          "Seperate flag for VBD in compiler mode.")      \
                                                                             \
   product(bool, AggresiveMemBar, false,                                               \
           "Optimize MemBar for non escaping objects.")      \
@@ -130,17 +130,17 @@
   product(bool, PrintFieldAccess, false,                                               \
           "Print field accesed in getfield/putfield")      \
                                                                             \
-  product(ccstrlist, SCSkipMethod, "",                                               \
-          "skip inserting fences for certain method, specified by format class::method, class::method,...")      \
+  product(ccstrlist, VBDRelaxedMethod, "",                                               \
+          "mark certain methods as relaxed for VBD compiler, specified by format class/method, class/method,...")      \
                                                                             \
-  product(ccstrlist, SCSkipField, "",                                               \
-          "skip inserting fences for certain field, specified by format class::field, class::field,...")      \
+  product(ccstrlist, VBDRelaxedField, "",                                               \
+          "mark certain fields as relaxed for VBD compiler, specified by format class::field, class::field,...")      \
                                                                                     \
-  product(ccstrlist, SCSkipClass, "",                                               \
-          "skip inserting fences for certain class, specified by format class, class,...")      \
+  product(ccstrlist, VBDRelaxedClass, "",                                               \
+          "mark certain classes(all methods of that class) as relaxed for VBD compiler, specified by format class, class,...")      \
                                                                                     \
-  product(ccstrlist, SCSkipLoc, "",                                               \
-          "skip inserting fences for certain method and fields combined, specified by format class1::method,class2::field;...")      \
+  product(ccstrlist, VBDRelaxedLoc, "",                                               \
+          "mark certain method and field combined as relaxed for VBD compiler, specified by format class1::method,class2::field;...")      \
                                                                             \
   product(bool, SCVerify, false,                                               \
           "Veryfy SC implementation by traverse Ideal Graph")      \

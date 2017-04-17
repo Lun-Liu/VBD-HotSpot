@@ -957,7 +957,7 @@ uint LoadNode::hash() const {
 }
 
 static bool skip_through_membars(Compile::AliasType* atp, const TypeInstPtr* tp, bool eliminate_boxing) {
-  if(SC || SCComp)
+  if(VBD || VBDComp)
     return false;
   if ((atp != NULL) && (atp->index() >= Compile::AliasIdxRaw)) {
     //[SC] force volatile

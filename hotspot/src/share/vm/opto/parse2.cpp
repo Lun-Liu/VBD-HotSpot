@@ -45,7 +45,7 @@ extern int explicit_null_checks_inserted,
 
 //---------------------------------array_load----------------------------------
 void Parse::array_load(BasicType elem_type) {
-  bool is_vol = (SC || SCComp) && !C->sc_method_skipped();
+  bool is_vol = (VBD||VBDComp) && !C->sc_method_skipped();
   //bool is_vol = !C->sc_method_skipped() && SC;
   const Type* elem = Type::TOP;
   Node* adr = array_addressing(elem_type, 0, &elem);
@@ -63,7 +63,7 @@ void Parse::array_load(BasicType elem_type) {
 
 //--------------------------------array_store----------------------------------
 void Parse::array_store(BasicType elem_type) {
-  bool is_vol = (SC || SCComp) && !C->sc_method_skipped();
+  bool is_vol = (VBD||VBDComp) && !C->sc_method_skipped();
   //bool is_vol = !C->sc_method_skipped() && SC;
   Node* adr = array_addressing(elem_type, 1);
   if (stopped())  return;     // guaranteed null or range check
@@ -1709,7 +1709,7 @@ void Parse::do_one_bytecode() {
     if (stopped())  return;     // guaranteed null or range check
     dec_sp(2);                  // Pop array and index
     //push_pair(make_load(control(), a, TypeLong::LONG, T_LONG, TypeAryPtr::LONGS, MemNode::unordered));
-    bool is_vol = (SC || SCComp) && !C->sc_method_skipped();
+    bool is_vol = (VBD||VBDComp) && !C->sc_method_skipped();
     //bool is_vol = !C->sc_method_skipped() && SC;
     MemNode::MemOrd mo = is_vol ? MemNode::acquire : MemNode::unordered;
     Node* ld = make_load(control(), a, TypeLong::LONG, T_LONG, TypeAryPtr::LONGS, mo, LoadNode::DependsOnlyOnTest, is_vol);
@@ -1724,7 +1724,7 @@ void Parse::do_one_bytecode() {
     dec_sp(2);                  // Pop array and index
     //push_pair(make_load(control(), a, Type::DOUBLE, T_DOUBLE, TypeAryPtr::DOUBLES, MemNode::unordered));
     //bool is_vol = !C->sc_method_skipped() && SC;
-    bool is_vol = (SC || SCComp) && !C->sc_method_skipped();
+    bool is_vol = (VBD||VBDComp) && !C->sc_method_skipped();
     MemNode::MemOrd mo = is_vol ? MemNode::acquire : MemNode::unordered;
     Node* ld = make_load(control(), a, Type::DOUBLE, T_DOUBLE, TypeAryPtr::DOUBLES, mo, LoadNode::DependsOnlyOnTest, is_vol);
     push_pair(ld);
@@ -1745,7 +1745,7 @@ void Parse::do_one_bytecode() {
     b = pop();                  // index (already used)
     a = pop();                  // the array itself
     //bool is_vol = !C->sc_method_skipped() && SC;
-    bool is_vol = (SC || SCComp) && !C->sc_method_skipped();
+    bool is_vol = (VBD||VBDComp) && !C->sc_method_skipped();
     if(is_vol)
       insert_mem_bar(Op_MemBarRelease);
     const TypeOopPtr* elemtype  = _gvn.type(a)->is_aryptr()->elem()->make_oopptr();
@@ -1761,7 +1761,7 @@ void Parse::do_one_bytecode() {
     c = pop_pair();
     dec_sp(2);                  // Pop array and index
     //bool is_vol = !C->sc_method_skipped() && SC;
-    bool is_vol = (SC || SCComp) && !C->sc_method_skipped();
+    bool is_vol = (VBD||VBDComp) && !C->sc_method_skipped();
     if(is_vol)
       insert_mem_bar(Op_MemBarRelease);
     MemNode::MemOrd mo = is_vol ? MemNode::release : MemNode::unordered;
@@ -1777,7 +1777,7 @@ void Parse::do_one_bytecode() {
     dec_sp(2);                  // Pop array and index
     c = dstore_rounding(c);
     //bool is_vol = !C->sc_method_skipped() && SC;
-    bool is_vol = (SC || SCComp) && !C->sc_method_skipped();
+    bool is_vol = (VBD||VBDComp) && !C->sc_method_skipped();
     if(is_vol)
       insert_mem_bar(Op_MemBarRelease);
     MemNode::MemOrd mo = is_vol ? MemNode::release : MemNode::unordered;

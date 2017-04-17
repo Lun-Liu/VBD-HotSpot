@@ -3674,7 +3674,7 @@ Compile::TracePhase::~TracePhase() {
 
 //------------------------------sc_method_skipped---------------------------
 bool Compile::sc_method_skipped() const {
-  if(SCSkipMethod[0] != '\0'){
+  if(VBDRelaxedMethod[0] != '\0'){
     const char* hname = C->method()->holder()->name()->as_quoted_ascii();
     const char* mname = C->method()->name()->as_quoted_ascii();
     const char* delim = "/";
@@ -3682,8 +3682,8 @@ bool Compile::sc_method_skipped() const {
     strcpy(name,hname);
     strcat(name,delim);
     strcat(name,mname);
-    //printf("To Comp %s, %s: ", name, SCSkipMethod);
-    if(strstr(SCSkipMethod, name) != NULL){
+    //printf("To Comp %s, %s: ", name, VBDRelaxedMethod);
+    if(strstr(VBDRelaxedMethod, name) != NULL){
       //printf("TRUE\n");
       free(name);
       return true;
@@ -3699,7 +3699,7 @@ bool Compile::sc_method_skipped() const {
 
 //------------------------------field_skipped---------------------------
 bool Compile::sc_field_skipped(ciField* f) const {
-  if(SCSkipField[0] != '\0'){
+  if(VBDRelaxedField[0] != '\0'){
     const char* hname = f->holder()->name()->as_quoted_ascii();
     const char* fname = f->name()->as_quoted_ascii();
     const char* delim = "::";
@@ -3707,7 +3707,7 @@ bool Compile::sc_field_skipped(ciField* f) const {
     strcpy(name,hname);
     strcat(name,delim);
     strcat(name,fname);
-    if(strstr(SCSkipField, name) != NULL){
+    if(strstr(VBDRelaxedField, name) != NULL){
       free(name);
       return true;
     }else{
@@ -3721,14 +3721,14 @@ bool Compile::sc_field_skipped(ciField* f) const {
 
 //------------------------------field_skipped---------------------------
 bool Compile::sc_class_skipped(ciField* f) const {
-  if(SCSkipClass[0] != '\0'){
+  if(VBDRelaxedClass[0] != '\0'){
     const char* hname = f->holder()->name()->as_quoted_ascii();
     const char* delim = ",";
     char* name = (char*)calloc(strlen(hname) + strlen(delim) + 1, sizeof(char));
     strcpy(name,hname);
     strcat(name,delim);
-    //printf("To Comp %s, %s: ", name, SCSkipClass);
-    if(strstr(SCSkipClass, name) != NULL){
+    //printf("To Comp %s, %s: ", name, VBDRelaxedClass);
+    if(strstr(VBDRelaxedClass, name) != NULL){
       //printf("TRUE\n");
       free(name);
       return true;
@@ -3743,7 +3743,7 @@ bool Compile::sc_class_skipped(ciField* f) const {
 }
 //------------------------------sc_loc_skipped---------------------------
 bool Compile::sc_loc_skipped(ciField* f) const {
-  if(SCSkipLoc[0] != '\0'){
+  if(VBDRelaxedLoc[0] != '\0'){
     const char* hname = C->method()->holder()->name()->as_quoted_ascii();
     const char* mname = C->method()->name()->as_quoted_ascii();
     const char* delim = "::";
@@ -3759,7 +3759,7 @@ bool Compile::sc_loc_skipped(ciField* f) const {
     strcat(name,hname2);
     strcat(name,delim);
     strcat(name,fname);
-    if(strstr(SCSkipLoc, name) != NULL){
+    if(strstr(VBDRelaxedLoc, name) != NULL){
       free(name);
       return true;
     }else{

@@ -911,7 +911,7 @@ void TemplateTable::iastore() {
                   Address::times_4,
                   arrayOopDesc::base_offset_in_bytes(T_INT)),
           rax);
-  if(SC || SCInter)
+  if(VBD || VBDInter)
     volatile_barrier(Assembler::Membar_mask_bits(Assembler::StoreLoad | Assembler::StoreStore));
 }
 
@@ -927,7 +927,7 @@ void TemplateTable::lastore() {
                   Address::times_8,
                   arrayOopDesc::base_offset_in_bytes(T_LONG)),
           rax);
-  if(SC || SCInter)
+  if(VBD || VBDInter)
     volatile_barrier(Assembler::Membar_mask_bits(Assembler::StoreLoad | Assembler::StoreStore));
 }
 
@@ -943,7 +943,7 @@ void TemplateTable::fastore() {
                    Address::times_4,
                    arrayOopDesc::base_offset_in_bytes(T_FLOAT)),
            xmm0);
-  if(SC || SCInter)
+  if(VBD || VBDInter)
     volatile_barrier(Assembler::Membar_mask_bits(Assembler::StoreLoad | Assembler::StoreStore));
 }
 
@@ -959,7 +959,7 @@ void TemplateTable::dastore() {
                    Address::times_8,
                    arrayOopDesc::base_offset_in_bytes(T_DOUBLE)),
            xmm0);
-  if(SC || SCInter)
+  if(VBD || VBDInter)
     volatile_barrier(Assembler::Membar_mask_bits(Assembler::StoreLoad | Assembler::StoreStore));
 }
 
@@ -1016,7 +1016,7 @@ void TemplateTable::aastore() {
   // Pop stack arguments
   __ bind(done);
   __ addptr(rsp, 3 * Interpreter::stackElementSize);
-  if(SC || SCInter)
+  if(VBD || VBDInter)
     volatile_barrier(Assembler::Membar_mask_bits(Assembler::StoreLoad | Assembler::StoreStore));
 }
 
@@ -1032,7 +1032,7 @@ void TemplateTable::bastore() {
                   Address::times_1,
                   arrayOopDesc::base_offset_in_bytes(T_BYTE)),
           rax);
-  if(SC || SCInter)
+  if(VBD || VBDInter)
     volatile_barrier(Assembler::Membar_mask_bits(Assembler::StoreLoad | Assembler::StoreStore));
 }
 
@@ -1048,7 +1048,7 @@ void TemplateTable::castore() {
                   Address::times_2,
                   arrayOopDesc::base_offset_in_bytes(T_CHAR)),
           rax);
-  if(SC || SCInter)
+  if(VBD || VBDInter)
     volatile_barrier(Assembler::Membar_mask_bits(Assembler::StoreLoad | Assembler::StoreStore));
 }
 
@@ -2648,7 +2648,7 @@ void TemplateTable::putfield_or_static(int byte_no, bool is_static) {
   __ bind(Done);
 
   // Check for volatile store
-  if(!SC && !SCInter){
+  if(!VBD && !VBDInter){
     __ testl(rdx, rdx);
     __ jcc(Assembler::zero, notVolatile);
   }
@@ -2781,7 +2781,7 @@ void TemplateTable::fast_storefield(TosState state) {
   }
 
   // Check for volatile store
-  if(!SC && !SCInter){
+  if(!VBD && !VBDInter){
     __ testl(rdx, rdx);
     __ jcc(Assembler::zero, notVolatile);
   }
