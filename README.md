@@ -23,6 +23,8 @@ variable.
 	```
 	make all
 	```
+\* Openjdk8u have some compatability issue with gcc 6.0. See (http://git.net/ml/hotspot-dev/2016-05/msg00133.html). You can consider downgrade your gcc if you run into this issue.
+
 the resulting jdk image should be found in build/*
 
 ## Run Java with VBD-HotSpot
