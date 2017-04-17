@@ -3142,7 +3142,7 @@ bool LibraryCallKit::inline_unsafe_ordered_store(BasicType type) {
   else {
     store = store_to_memory(control(), adr, val, type, adr_type, MemNode::release, require_atomic_access);
   }
-  if ((SC || SCComp)|| !support_IRIW_for_not_multiple_copy_atomic_cpu) {
+  if ((SC || SCComp)) {
     insert_mem_bar(Op_MemBarVolatile);
   }
   insert_mem_bar(Op_MemBarCPUOrder);
@@ -4423,8 +4423,10 @@ bool LibraryCallKit::inline_unsafe_copyMemory() {
 
   // Do not let reads of the copy destination float above the copy.
   insert_mem_bar(Op_MemBarCPUOrder);
-  if(SC||SCComp)
+  if(SC||SCComp){
+    insert_mem_bar(Op_MemBarAcquire);
     insert_mem_bar(Op_MemBarVolatile);
+  }
 
   return true;
 }

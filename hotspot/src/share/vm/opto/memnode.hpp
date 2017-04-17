@@ -1035,6 +1035,7 @@ class MemBarNode: public MultiNode {
   const TypePtr* _adr_type;
 
 public:
+  bool _is_scalar_replaceable;
   enum {
     Precedent = TypeFunc::Parms  // optional edge to force precedence
   };

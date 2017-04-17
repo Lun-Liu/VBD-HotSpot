@@ -124,6 +124,9 @@
   product(bool, SCComp, false,                                               \
           "Seperate flag for SC in compiler mode.")      \
                                                                             \
+  product(bool, AggresiveMemBar, false,                                               \
+          "Optimize MemBar for non escaping objects.")      \
+                                                                            \
   product(bool, PrintFieldAccess, false,                                               \
           "Print field accesed in getfield/putfield")      \
                                                                             \
@@ -132,6 +135,9 @@
                                                                             \
   product(ccstrlist, SCSkipField, "",                                               \
           "skip inserting fences for certain field, specified by format class::field, class::field,...")      \
+                                                                                    \
+  product(ccstrlist, SCSkipClass, "",                                               \
+          "skip inserting fences for certain class, specified by format class, class,...")      \
                                                                                     \
   product(ccstrlist, SCSkipLoc, "",                                               \
           "skip inserting fences for certain method and fields combined, specified by format class1::method,class2::field;...")      \

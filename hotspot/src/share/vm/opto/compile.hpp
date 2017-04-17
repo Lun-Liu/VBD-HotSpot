@@ -507,6 +507,7 @@ class Compile : public Phase {
   //should skipping inserting fences for SC?
   bool sc_method_skipped() const;
   bool sc_field_skipped(ciField* f) const;
+  bool sc_class_skipped(ciField* f) const;
   bool sc_loc_skipped(ciField* f) const;
   // Accessors
 

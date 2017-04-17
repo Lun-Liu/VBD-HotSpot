@@ -3677,15 +3677,18 @@ bool Compile::sc_method_skipped() const {
   if(SCSkipMethod[0] != '\0'){
     const char* hname = C->method()->holder()->name()->as_quoted_ascii();
     const char* mname = C->method()->name()->as_quoted_ascii();
-    const char* delim = "::";
+    const char* delim = "/";
     char* name = (char*)calloc(strlen(hname) + strlen(delim) + strlen(mname) + 1, sizeof(char));
     strcpy(name,hname);
     strcat(name,delim);
     strcat(name,mname);
+    //printf("To Comp %s, %s: ", name, SCSkipMethod);
     if(strstr(SCSkipMethod, name) != NULL){
+      //printf("TRUE\n");
       free(name);
       return true;
     }else{
+      //printf("FALSE\n");
       free(name);
       return false;
     }
@@ -3716,6 +3719,28 @@ bool Compile::sc_field_skipped(ciField* f) const {
   }
 }
 
+//------------------------------field_skipped---------------------------
+bool Compile::sc_class_skipped(ciField* f) const {
+  if(SCSkipClass[0] != '\0'){
+    const char* hname = f->holder()->name()->as_quoted_ascii();
+    const char* delim = ",";
+    char* name = (char*)calloc(strlen(hname) + strlen(delim) + 1, sizeof(char));
+    strcpy(name,hname);
+    strcat(name,delim);
+    //printf("To Comp %s, %s: ", name, SCSkipClass);
+    if(strstr(SCSkipClass, name) != NULL){
+      //printf("TRUE\n");
+      free(name);
+      return true;
+    }else{
+      //printf("FALSE\n");
+      free(name);
+      return false;
+    }
+  }else {
+    return false;
+  }
+}
 //------------------------------sc_loc_skipped---------------------------
 bool Compile::sc_loc_skipped(ciField* f) const {
   if(SCSkipLoc[0] != '\0'){

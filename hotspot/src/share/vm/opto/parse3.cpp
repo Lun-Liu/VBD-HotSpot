@@ -208,7 +208,7 @@ void Parse::do_get_xxx(Node* obj, ciField* field, bool is_field) {
   ciType* field_klass = field->type();
   //[SC]: forcing volatile
   bool is_vol = true;
-  if ((!SC && !SCComp) || C->sc_method_skipped() || C->sc_field_skipped(field) || C->sc_loc_skipped(field))
+  if ((!SC && !SCComp) || C->sc_class_skipped(field) || C->sc_method_skipped() || C->sc_field_skipped(field) || C->sc_loc_skipped(field))
   //if (C->sc_skipped() || !SC)
     is_vol = field->is_volatile();
 
@@ -297,7 +297,7 @@ void Parse::do_put_xxx(Node* obj, ciField* field, bool is_field) {
   //[SC]: forcing volatile
   bool is_vol = true;
   //if (C->sc_skipped() || !SC)
-  if ((!SC && !SCComp) || C->sc_method_skipped() || C->sc_field_skipped(field) || C->sc_loc_skipped(field))
+  if ((!SC && !SCComp) || C->sc_class_skipped(field) || C->sc_method_skipped() || C->sc_field_skipped(field) || C->sc_loc_skipped(field))
     is_vol = field->is_volatile();
   // If reference is volatile, prevent following memory ops from
   // floating down past the volatile write.  Also prevents commoning
@@ -343,7 +343,10 @@ void Parse::do_put_xxx(Node* obj, ciField* field, bool is_field) {
   if (is_vol) {
     // If not multiple copy atomic, we do the MemBarVolatile before the load.
     if (!support_IRIW_for_not_multiple_copy_atomic_cpu) {
-      insert_mem_bar(Op_MemBarVolatile, store); // Use fat membar
+      if(AggresiveMemBar)
+        insert_mem_bar(Op_MemBarVolatile, store); // Use fat membar
+      else 
+        insert_mem_bar(Op_MemBarVolatile);
     }
     // Remember we wrote a volatile field.
     // For not multiple copy atomic cpu (ppc64) a barrier should be issued

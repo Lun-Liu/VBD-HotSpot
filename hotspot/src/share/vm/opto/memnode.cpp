@@ -957,11 +957,13 @@ uint LoadNode::hash() const {
 }
 
 static bool skip_through_membars(Compile::AliasType* atp, const TypeInstPtr* tp, bool eliminate_boxing) {
+  if(SC || SCComp)
+    return false;
   if ((atp != NULL) && (atp->index() >= Compile::AliasIdxRaw)) {
     //[SC] force volatile
-    bool non_volatile = false;
-    if (!SC)
-      non_volatile = (atp->field() != NULL) && !atp->field()->is_volatile();
+    //bool non_volatile = false;
+    //if (!SC)
+    bool  non_volatile = (atp->field() != NULL) && !atp->field()->is_volatile();
     bool is_stable_ary = FoldStableValues &&
                          (tp != NULL) && (tp->isa_aryptr() != NULL) &&
                          tp->isa_aryptr()->is_stable();
@@ -2986,6 +2988,7 @@ MemBarNode::MemBarNode(Compile* C, int alias_idx, Node* precedent)
   init_req(TypeFunc::ReturnAdr,top);
   if (precedent != NULL)
     init_req(TypeFunc::Parms, precedent);
+  _is_scalar_replaceable = false;
 }
 
 //------------------------------cmp--------------------------------------------
@@ -3045,12 +3048,17 @@ Node *MemBarNode::Ideal(PhaseGVN *phase, bool can_reshape) {
         }
       }
       if (my_mem != NULL && my_mem->is_Mem()) {
-        const TypeOopPtr* t_oop = my_mem->in(MemNode::Address)->bottom_type()->isa_oopptr();
-        // Check for scalar replaced object reference.
-        if( t_oop != NULL && t_oop->is_known_instance_field() &&
-            t_oop->offset() != Type::OffsetBot &&
-            t_oop->offset() != Type::OffsetTop) {
-          eliminate = true;
+        if(AggresiveMemBar){
+          if( _is_scalar_replaceable == true )
+            eliminate = true;
+        } else {
+          const TypeOopPtr* t_oop = my_mem->in(MemNode::Address)->bottom_type()->isa_oopptr();
+          // Check for scalar replaced object reference.
+          if( t_oop != NULL && t_oop->is_known_instance_field() &&
+              t_oop->offset() != Type::OffsetBot &&
+              t_oop->offset() != Type::OffsetTop) {
+            eliminate = true;
+          }
         }
       }
     } else if (opc == Op_MemBarRelease) {
