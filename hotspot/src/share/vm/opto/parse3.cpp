@@ -206,7 +206,8 @@ void Parse::do_get_xxx(Node* obj, ciField* field, bool is_field) {
   }
 
   ciType* field_klass = field->type();
-  //[SC]: forcing volatile
+  //[VBD-HotSpot: Modified in 2017.04]
+  //forcing volatile
   bool is_vol = true;
   if ((!VBD && !VBDComp) || C->sc_class_skipped(field) || C->sc_method_skipped() || C->sc_field_skipped(field) || C->sc_loc_skipped(field))
   //if (C->sc_skipped() || !VBD)
@@ -294,7 +295,8 @@ void Parse::do_get_xxx(Node* obj, ciField* field, bool is_field) {
 
 void Parse::do_put_xxx(Node* obj, ciField* field, bool is_field) {
 
-  //[SC]: forcing volatile
+  //[VBD-HotSpot: Modified in 2017.04]
+  //forcing volatile
   bool is_vol = true;
   //if (C->sc_skipped() || !VBD)
   if ((!VBD && !VBDComp) || C->sc_class_skipped(field) || C->sc_method_skipped() || C->sc_field_skipped(field) || C->sc_loc_skipped(field))
@@ -343,6 +345,7 @@ void Parse::do_put_xxx(Node* obj, ciField* field, bool is_field) {
   if (is_vol) {
     // If not multiple copy atomic, we do the MemBarVolatile before the load.
     if (!support_IRIW_for_not_multiple_copy_atomic_cpu) {
+      //[VBD-HotSpot: Modified in 2017.04]
       if(AggresiveMemBar)
         insert_mem_bar(Op_MemBarVolatile, store); // Use fat membar
       else 

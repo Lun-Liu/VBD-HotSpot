@@ -1015,6 +1015,7 @@ private:
 
 //----------------- Printing, etc
 public:
+  //[VBD-HotSpot: Modified in 2017.04]
   //[SCVerify]
   void scwalk(Unique_Node_List &visited, Unique_Node_List& protected_mem, Unique_Node_List& unsure);
   void mark_following(Unique_Node_List &mark_visited, Unique_Node_List& protected_mem);

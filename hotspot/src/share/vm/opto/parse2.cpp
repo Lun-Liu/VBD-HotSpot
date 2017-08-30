@@ -45,6 +45,7 @@ extern int explicit_null_checks_inserted,
 
 //---------------------------------array_load----------------------------------
 void Parse::array_load(BasicType elem_type) {
+  //[VBD-HotSpot: Modified in 2017.04]
   bool is_vol = (VBD||VBDComp) && !C->sc_method_skipped();
   //bool is_vol = !C->sc_method_skipped() && SC;
   const Type* elem = Type::TOP;
@@ -63,6 +64,7 @@ void Parse::array_load(BasicType elem_type) {
 
 //--------------------------------array_store----------------------------------
 void Parse::array_store(BasicType elem_type) {
+  //[VBD-HotSpot: Modified in 2017.04]
   bool is_vol = (VBD||VBDComp) && !C->sc_method_skipped();
   //bool is_vol = !C->sc_method_skipped() && SC;
   Node* adr = array_addressing(elem_type, 1);
@@ -1708,6 +1710,7 @@ void Parse::do_one_bytecode() {
     a = array_addressing(T_LONG, 0);
     if (stopped())  return;     // guaranteed null or range check
     dec_sp(2);                  // Pop array and index
+    //[VBD-HotSpot: Modified in 2017.04]
     //push_pair(make_load(control(), a, TypeLong::LONG, T_LONG, TypeAryPtr::LONGS, MemNode::unordered));
     bool is_vol = (VBD||VBDComp) && !C->sc_method_skipped();
     //bool is_vol = !C->sc_method_skipped() && SC;
@@ -1722,6 +1725,7 @@ void Parse::do_one_bytecode() {
     a = array_addressing(T_DOUBLE, 0);
     if (stopped())  return;     // guaranteed null or range check
     dec_sp(2);                  // Pop array and index
+    //[VBD-HotSpot: Modified in 2017.04]
     //push_pair(make_load(control(), a, Type::DOUBLE, T_DOUBLE, TypeAryPtr::DOUBLES, MemNode::unordered));
     //bool is_vol = !C->sc_method_skipped() && SC;
     bool is_vol = (VBD||VBDComp) && !C->sc_method_skipped();
@@ -1744,6 +1748,7 @@ void Parse::do_one_bytecode() {
     c = pop();                  // Oop to store
     b = pop();                  // index (already used)
     a = pop();                  // the array itself
+    //[VBD-HotSpot: Modified in 2017.04]
     //bool is_vol = !C->sc_method_skipped() && SC;
     bool is_vol = (VBD||VBDComp) && !C->sc_method_skipped();
     if(is_vol)
@@ -1760,6 +1765,7 @@ void Parse::do_one_bytecode() {
     if (stopped())  return;     // guaranteed null or range check
     c = pop_pair();
     dec_sp(2);                  // Pop array and index
+    //[VBD-HotSpot: Modified in 2017.04]
     //bool is_vol = !C->sc_method_skipped() && SC;
     bool is_vol = (VBD||VBDComp) && !C->sc_method_skipped();
     if(is_vol)
@@ -1776,6 +1782,7 @@ void Parse::do_one_bytecode() {
     c = pop_pair();
     dec_sp(2);                  // Pop array and index
     c = dstore_rounding(c);
+    //[VBD-HotSpot: Modified in 2017.04]
     //bool is_vol = !C->sc_method_skipped() && SC;
     bool is_vol = (VBD||VBDComp) && !C->sc_method_skipped();
     if(is_vol)

@@ -58,6 +58,9 @@
 // Defines all globals flags used by the server compiler.
 //
 
+//[VBD-HotSpot: Modified in 2017.04]
+//Added flags from 'VBD' to 'SCVerify'
+
 #define C2_FLAGS(develop, develop_pd, product, product_pd, diagnostic, experimental, notproduct) \
                                                                             \
   develop(bool, StressLCM, false,                                           \

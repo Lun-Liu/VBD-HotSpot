@@ -844,6 +844,7 @@ Compile::Compile( ciEnv* ci_env, C2Compiler* compiler, ciMethod* target, int osr
   if (failing())  return;
   NOT_PRODUCT( verify_graph_edges(); )
 
+  //[VBD-HotSpot: Modified in 2017.04]
   //[SCVerify]
   if(SCVerify)
     Verify_SC();
@@ -2032,6 +2033,7 @@ void Compile::inline_incrementally(PhaseIterGVN& igvn) {
 }
 
 
+//[VBD-HotSpot: Modified in 2017.04]
 void Compile::Verify_SC(){
   Unique_Node_List nlist(comp_arena());
   identify_useful_nodes(nlist);
@@ -3672,6 +3674,7 @@ Compile::TracePhase::~TracePhase() {
   }
 }
 
+//[VBD-HotSpot: Added in 2017.04]
 //------------------------------sc_method_skipped---------------------------
 bool Compile::sc_method_skipped() const {
   if(VBDRelaxedMethod[0] != '\0'){
@@ -3697,6 +3700,7 @@ bool Compile::sc_method_skipped() const {
   }
 }
 
+//[VBD-HotSpot: Added in 2017.04]
 //------------------------------field_skipped---------------------------
 bool Compile::sc_field_skipped(ciField* f) const {
   if(VBDRelaxedField[0] != '\0'){
@@ -3719,6 +3723,7 @@ bool Compile::sc_field_skipped(ciField* f) const {
   }
 }
 
+//[VBD-HotSpot: Added in 2017.04]
 //------------------------------field_skipped---------------------------
 bool Compile::sc_class_skipped(ciField* f) const {
   if(VBDRelaxedClass[0] != '\0'){
@@ -3741,6 +3746,8 @@ bool Compile::sc_class_skipped(ciField* f) const {
     return false;
   }
 }
+
+//[VBD-HotSpot: Added in 2017.04]
 //------------------------------sc_loc_skipped---------------------------
 bool Compile::sc_loc_skipped(ciField* f) const {
   if(VBDRelaxedLoc[0] != '\0'){

@@ -957,6 +957,7 @@ uint LoadNode::hash() const {
 }
 
 static bool skip_through_membars(Compile::AliasType* atp, const TypeInstPtr* tp, bool eliminate_boxing) {
+  //[VBD-HotSpot: Modified in 2017.04]
   if(VBD || VBDComp)
     return false;
   if ((atp != NULL) && (atp->index() >= Compile::AliasIdxRaw)) {
@@ -3048,6 +3049,7 @@ Node *MemBarNode::Ideal(PhaseGVN *phase, bool can_reshape) {
         }
       }
       if (my_mem != NULL && my_mem->is_Mem()) {
+        //[VBD-HotSpot: Modified in 2017.04]
         if(AggresiveMemBar){
           if( _is_scalar_replaceable == true )
             eliminate = true;

@@ -911,6 +911,7 @@ void TemplateTable::iastore() {
                   Address::times_4,
                   arrayOopDesc::base_offset_in_bytes(T_INT)),
           rax);
+  //[VBD-HotSpot: Modified in 2017.04]
   if(VBD || VBDInter)
     volatile_barrier(Assembler::Membar_mask_bits(Assembler::StoreLoad | Assembler::StoreStore));
 }
@@ -927,6 +928,7 @@ void TemplateTable::lastore() {
                   Address::times_8,
                   arrayOopDesc::base_offset_in_bytes(T_LONG)),
           rax);
+  //[VBD-HotSpot: Modified in 2017.04]
   if(VBD || VBDInter)
     volatile_barrier(Assembler::Membar_mask_bits(Assembler::StoreLoad | Assembler::StoreStore));
 }
@@ -943,6 +945,7 @@ void TemplateTable::fastore() {
                    Address::times_4,
                    arrayOopDesc::base_offset_in_bytes(T_FLOAT)),
            xmm0);
+  //[VBD-HotSpot: Modified in 2017.04]
   if(VBD || VBDInter)
     volatile_barrier(Assembler::Membar_mask_bits(Assembler::StoreLoad | Assembler::StoreStore));
 }
@@ -959,6 +962,7 @@ void TemplateTable::dastore() {
                    Address::times_8,
                    arrayOopDesc::base_offset_in_bytes(T_DOUBLE)),
            xmm0);
+  //[VBD-HotSpot: Modified in 2017.04]
   if(VBD || VBDInter)
     volatile_barrier(Assembler::Membar_mask_bits(Assembler::StoreLoad | Assembler::StoreStore));
 }
@@ -1016,6 +1020,7 @@ void TemplateTable::aastore() {
   // Pop stack arguments
   __ bind(done);
   __ addptr(rsp, 3 * Interpreter::stackElementSize);
+  //[VBD-HotSpot: Modified in 2017.04]
   if(VBD || VBDInter)
     volatile_barrier(Assembler::Membar_mask_bits(Assembler::StoreLoad | Assembler::StoreStore));
 }
@@ -1032,6 +1037,7 @@ void TemplateTable::bastore() {
                   Address::times_1,
                   arrayOopDesc::base_offset_in_bytes(T_BYTE)),
           rax);
+  //[VBD-HotSpot: Modified in 2017.04]
   if(VBD || VBDInter)
     volatile_barrier(Assembler::Membar_mask_bits(Assembler::StoreLoad | Assembler::StoreStore));
 }
@@ -1048,6 +1054,7 @@ void TemplateTable::castore() {
                   Address::times_2,
                   arrayOopDesc::base_offset_in_bytes(T_CHAR)),
           rax);
+  //[VBD-HotSpot: Modified in 2017.04]
   if(VBD || VBDInter)
     volatile_barrier(Assembler::Membar_mask_bits(Assembler::StoreLoad | Assembler::StoreStore));
 }
@@ -2647,6 +2654,7 @@ void TemplateTable::putfield_or_static(int byte_no, bool is_static) {
 
   __ bind(Done);
 
+  //[VBD-HotSpot: Modified in 2017.04]
   // Check for volatile store
   if(!VBD && !VBDInter){
     __ testl(rdx, rdx);
@@ -2780,6 +2788,7 @@ void TemplateTable::fast_storefield(TosState state) {
     ShouldNotReachHere();
   }
 
+  //[VBD-HotSpot: Modified in 2017.04]
   // Check for volatile store
   if(!VBD && !VBDInter){
     __ testl(rdx, rdx);

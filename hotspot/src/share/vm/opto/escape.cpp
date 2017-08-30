@@ -166,6 +166,7 @@ bool ConnectionGraph::compute_escape() {
       // may be eliminated.
       storestore_worklist.append(n);
     } else if (n->is_MemBar()) {
+      //[VBD-HotSpot: Modified in 2017.04]
       if(AggresiveMemBar){
         record_for_optimizer(n);
         if(((n->Opcode() == Op_MemBarAcquire) || (n->Opcode() == Op_MemBarVolatile)) && n->req() > MemBarNode::Precedent){
@@ -314,6 +315,7 @@ bool ConnectionGraph::compute_escape() {
 #endif
   }
 
+  //[VBD-HotSpot: Added in 2017.04]
   //6. Update escape optimization info for membar acquire
   if(AggresiveMemBar){
     while(membar_escape_worklist.size()>0){
